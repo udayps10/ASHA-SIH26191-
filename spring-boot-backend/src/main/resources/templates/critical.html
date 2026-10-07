@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Critical Records - Aasha</title>
+    <link rel="stylesheet" th:href="@{/css/aasha-design-system.css}">
+    <link rel="stylesheet" th:href="@{/css/aasha-reference.css}">
+    <link rel="icon" type="image/png" href="/images/asha-logo.png">
+    <script defer th:src="@{/js/aasha-reference.js}"></script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-brand"><div class="header-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><div><span class="header-brand-text">Aasha</span><span class="header-brand-tag">Reunification Network</span></div></a>
+            <nav class="header-nav"><a href="/" class="header-link" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" class="header-link" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search" class="header-link">Find a Loved One</a><a href="/critical" class="header-link active">Critical</a><a href="/camps" class="header-link">Relief Camps</a><a href="/about" class="header-link">About</a><a href="/app.html" class="header-link">Get App</a></nav>
+            <div class="flex items-center gap-3">
+                <span class="badge badge-live">
+                    <span class="relative flex w-2 h-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full w-2 h-2 bg-green-400"></span>
+                    </span>
+                    LIVE
+                </span>
+                <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 13px; color: var(--ink-sec);" sec:authentication="name">user</span>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Logout</button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Login</a>
+                </div>
+            </div>
+            <button class="header-toggle" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" onclick="toggleMobileNav()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+    </header>
+
+    <main id="main" class="page">
+        <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+            <div class="mb-8">
+                <span class="badge badge-red mb-4" style="display:inline-flex;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    CONFIDENTIAL — RESTRICTED ACCESS
+                </span>
+                <h1 class="h1">Critical Records</h1>
+                <p style="margin-top: 12px; font-size: 18px; color: var(--ink-sec);">Unidentified, deceased, and critically injured persons. Handle with care.</p>
+            </div>
+
+            <form th:action="@{/critical}" method="post" class="glass-bright critical-form" style="padding: 24px; margin-bottom: 32px;">
+                <div class="form-row mb-4">
+                    <div class="form-group">
+                        <label class="form-label" for="name">Name / Partial Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Ramesh, Unknown Male" th:value="${request != null ? request.name : ''}" style="border-color: rgba(239,68,68,0.15);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="age">Age (approx.)</label>
+                        <input type="number" id="age" name="age" class="form-input" placeholder="e.g. 45" th:value="${request != null and request.age > 0 ? request.age : ''}" style="border-color: rgba(239,68,68,0.15);">
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-urgent">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        Search Critical Records
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results -->
+            <div th:if="${searched}" class="results-list">
+                <div class="glass empty-state" th:if="${results != null and results.isEmpty()}">
+                    <p style="color: #475569;">No records match your search. Try different search terms.</p>
+                </div>
+
+                <div class="glass critical-result" style="padding: 24px;" th:each="record : ${results}">
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <div class="flex items-center gap-4">
+                            <img th:if="${record.photoUrl != null and !record.photoUrl.isEmpty()}" th:src="${record.photoUrl}" alt="Photo" style="width: 64px; height: 64px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border);">
+                            <div>
+                                <h3 style="font-weight: 700; color: var(--navy); font-size: 18px;" th:text="${record.name}">Name</h3>
+                                <p style="font-size: 14px; color: var(--ink-sec); margin-top: 4px;">Age approx.: <span th:text="${record.age}">0</span> • Camp: <span th:text="${record.campName}">Camp</span></p>
+                            </div>
+                        </div>
+                        <span class="badge badge-red" th:text="${record.status}">Status</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                        <div style="padding: 12px; border-radius: 12px; background: var(--bg-light); border: 1px solid var(--border);">
+                            <p class="result-detail-label">LAST CLOTHING</p>
+                            <p style="font-size: 14px; color: var(--ink);" th:text="${record.lastKnownClothing}">-</p>
+                        </div>
+                        <div style="padding: 12px; border-radius: 12px; background: var(--bg-light); border: 1px solid var(--border);">
+                            <p class="result-detail-label">OFFICER CONTACT</p>
+                            <a th:href="'tel:' + ${record.officerContact}" style="font-family: var(--font-mono); font-size: 14px; color: var(--green); font-weight: 600;" th:text="${record.officerContact}">-</a>
+                        </div>
+                        <div style="padding: 12px; border-radius: 12px; background: var(--bg-light); border: 1px solid var(--border);">
+                            <p class="result-detail-label">ADDITIONAL DETAILS</p>
+                            <p style="font-size: 14px; color: var(--ink);" th:text="${record.additionalDetails}">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:unless="${searched}" class="glass empty-state">
+                <p style="color: #475569;">Use the form above to search. You can search by partial name or clothing description.</p>
+            </div>
+
+            <div class="mt-10 critical-info flex items-center gap-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" style="flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <p style="font-size: 14px; color: var(--ink-sec);">Records are managed by authorized relief officers. Contact NDMA helpline <span style="font-family: var(--font-mono); color: var(--saffron-dark); font-weight: 600;">1078</span> or your district relief officer for urgent cases.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><div class="footer-brand"><div class="footer-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><span class="footer-brand-text">Aasha</span></div><p class="footer-desc">AI-powered platform reuniting families separated by natural disasters across India.</p></div>
+                <div><h4 class="footer-title">Services</h4>                    <ul class="footer-links"><li><a href="/search">Find Missing Person</a></li><li><a href="/camps">Relief Camps</a></li></ul></div>
+                <div><h4 class="footer-title">Emergency</h4><ul class="footer-links"><li>NDMA: <span style="color:#fbbf24;">1078</span></li><li>Police: <span style="color:#fbbf24;">100</span></li></ul></div>
+            </div>
+            <div class="footer-bottom"><p>© 2026 Aasha. Smart India Hackathon.</p><p style="font-family:var(--font-mono);">Built with empathy for every missing soul.</p></div>
+        </div>
+    </footer>
+    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)"><div class="mobile-nav-panel" onclick="event.stopPropagation()"><div class="flex justify-between items-center"><span style="font-weight:800;font-size:18px;color:var(--navy);">Aasha</span><button class="mobile-nav-close" aria-label="Close navigation" onclick="toggleMobileNav()">&times;</button></div>            <nav class="mobile-nav-links"><a href="/" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search">Find a Loved One</a><a href="/critical" class="active">Critical</a><a href="/camps">Relief Camps</a><a href="/about">About</a><a href="/app.html">Get App</a></nav></div></div>
+    <script>function toggleMobileNav(){const n=document.getElementById('mobileNav');n.classList.toggle('open');document.body.style.overflow=n.classList.contains('open')?'hidden':'';}function closeMobileNav(e){if(e.target.id==='mobileNav')toggleMobileNav();}</script>
+    <div id="aashaSosMount" sec:authorize="isAuthenticated() and !hasRole('OFFICIAL')"></div>
+    <script th:src="@{/js/aasha-live.js}"></script>
+</body>
+</html>
