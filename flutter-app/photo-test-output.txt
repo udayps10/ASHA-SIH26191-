@@ -1,0 +1,8 @@
+00:00 +0: loading C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/official_normal_record_repository_test.dart
+00:00 +0: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/official_normal_record_repository_test.dart: record list uses backend route and parses normal records
+00:00 +1: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/official_normal_record_repository_test.dart: expired login is not presented as an empty list
+00:00 +2: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/official_normal_record_repository_test.dart: failed status change is not treated as success
+00:00 +3: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/image_upload_api_service_test.dart: serializes a normal image upload as multipart form data
+00:00 +4: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/authenticated_client_test.dart: existing login token is sent without changing the request
+00:00 +5: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/authenticated_client_test.dart: signed-out requests carry no fabricated authorization
+00:00 +6: All tests passed!
