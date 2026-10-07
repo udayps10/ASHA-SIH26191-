@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aasha — Download the App</title>
+<link rel="icon" type="image/png" href="/images/asha-logo.png">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:linear-gradient(160deg,#0b2d47 0%,#12405f 60%,#1668a5 100%); color:#0b2d47; min-height:100vh; display:flex; flex-direction:column; }
+  .bar { padding:16px 24px; display:flex; align-items:center; gap:12px; color:#fff; border-bottom:3px solid #e8a33d; background:rgba(0,0,0,.18); }
+  .bar img { width:34px; height:34px; object-fit:contain; }
+  .bar h1 { font-size:19px; }
+  .bar span { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9fc3d8; }
+  .main { flex:1; display:flex; align-items:center; justify-content:center; padding:36px 18px; }
+  .card { background:#fff; border-radius:22px; padding:36px 30px 30px; max-width:430px; width:100%; text-align:center; box-shadow:0 26px 60px rgba(0,0,0,.35); }
+  .badge { display:inline-block; background:#e6f4ea; color:#137333; font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase; padding:5px 13px; border-radius:30px; }
+  .card h2 { font-size:24px; margin:14px 0 6px; color:#0b2d47; }
+  .card p.sub { font-size:14px; color:#5b7a90; line-height:1.55; }
+  .qrbox { margin:22px auto 10px; padding:14px; background:#fff; border:2px dashed #cfe0ec; border-radius:18px; width:264px; }
+  .qrbox img { width:232px; height:232px; image-rendering:pixelated; display:block; margin:0 auto; }
+  .scan-hint { font-size:12.5px; color:#1668a5; font-weight:700; letter-spacing:.4px; text-transform:uppercase; margin-top:6px; }
+  .dlbtn { display:block; margin:20px auto 4px; background:#0b2d47; color:#fff; text-decoration:none; font-weight:800; font-size:16px; padding:15px 26px; border-radius:14px; letter-spacing:.3px; transition:.15s; }
+  .dlbtn:hover { background:#1668a5; }
+  .meta { font-size:12px; color:#7a93a5; margin-top:10px; font-family:Consolas,monospace; }
+  .steps { text-align:left; background:#f2f6f9; border-radius:14px; padding:15px 18px; margin-top:20px; font-size:13px; color:#32566c; line-height:1.9; }
+  .steps b { color:#0b2d47; }
+  .steps .n { display:inline-block; width:20px; height:20px; background:#e8a33d; color:#0b2d47; font-weight:800; font-size:11px; border-radius:50%; text-align:center; line-height:20px; margin-right:7px; }
+  .warn { margin-top:14px; font-size:11.5px; color:#b45309; background:#fef3e2; border-radius:9px; padding:9px 12px; line-height:1.5; }
+</style>
+</head>
+<body>
+<div class="bar"><img src="/images/asha-logo.png" alt=""><h1>Aasha</h1><span>Get the App</span></div>
+<div class="main">
+  <div class="card">
+    <span class="badge">Android APK · v1.0</span>
+    <h2>Download Aasha</h2>
+    <p class="sub">Scan the QR with your phone camera, or tap the button to download the app.</p>
+    <div class="qrbox"><img src="/images/qr/qr_apk_public.svg" alt="Scan to download Aasha app"></div>
+    <div class="scan-hint">Scan &rarr; Download &rarr; Install</div>
+    <a class="dlbtn" href="/downloads/aasha.apk" download>&#8681; Download Aasha.apk</a>
+    <div class="meta">aasha.udaycodes.site/downloads/aasha.apk</div>
+    <div class="steps">
+      <div><span class="n">1</span>Scan the QR with your Android phone camera.</div>
+      <div><span class="n">2</span>When the download finishes, open the APK file.</div>
+      <div><span class="n">3</span>Tap <b>Install</b> — allow &ldquo;Install from unknown sources&rdquo; if asked.</div>
+      <div><span class="n">4</span>Open Aasha and sign in or create an account.</div>
+    </div>
+    <div class="warn">For Android phones. An internet connection is required.</div>
+  </div>
+</div>
+</body>
+</html>
