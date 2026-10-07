@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relief Camps - Aasha</title>
+    <link rel="stylesheet" th:href="@{/css/aasha-design-system.css}">
+    <link rel="stylesheet" th:href="@{/css/aasha-reference.css}">
+    <link rel="icon" type="image/png" href="/images/asha-logo.png">
+    <script defer th:src="@{/js/aasha-reference.js}"></script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-brand"><div class="header-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><div><span class="header-brand-text">Aasha</span><span class="header-brand-tag">Reunification Network</span></div></a>
+            <nav class="header-nav"><a href="/" class="header-link" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" class="header-link" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search" class="header-link">Find a Loved One</a><a href="/critical" class="header-link" sec:authorize="hasRole('OFFICIAL')">Critical</a><a href="/camps" class="header-link active">Relief Camps</a><a href="/about" class="header-link">About</a><a href="/app.html" class="header-link">Get App</a></nav>
+            <div class="flex items-center gap-3">
+                <span class="badge badge-live">
+                    <span class="relative flex w-2 h-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full w-2 h-2 bg-green-400"></span>
+                    </span>
+                    LIVE
+                </span>
+                <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 13px; color: var(--ink-sec);" sec:authentication="name">user</span>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Logout</button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Login</a>
+                </div>
+            </div>
+            <button class="header-toggle" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" onclick="toggleMobileNav()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+    </header>
+
+    <main id="main" class="page">
+        <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="section-header-text">Live Directory</span>
+                <span class="badge badge-live">
+                    <span class="relative flex w-1.5 h-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full w-1.5 h-1.5 bg-green-400"></span></span>
+                    Live
+                </span>
+            </div>
+            <h1 class="h1 mb-3">Relief Camps</h1>
+            <p style="font-size: 18px; color: var(--ink-sec); margin-bottom: 32px;">Active government relief camps with contact info — fetched live from the API.</p>
+
+            <!-- Summary -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px;">
+                <div class="glass" style="padding: 20px; border-left: 4px solid var(--green);">
+                    <div style="font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--navy);" th:text="${#lists.size(camps)}">0</div>
+                    <div class="stat-label">Active Camps</div>
+                </div>
+                <div class="glass" style="padding: 20px; border-left: 4px solid var(--saffron);">
+                    <div style="font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--navy);" th:text="${#lists.size(camps)}">0</div>
+                    <div class="stat-label">Total Listed</div>
+                </div>
+                <div class="glass" style="padding: 20px; border-left: 4px solid var(--ashoka-blue);">
+                    <div style="font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--navy);" th:text="${#lists.size(camps)}">0</div>
+                    <div class="stat-label">In Your Search</div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="glass-bright" style="padding: 16px; margin-bottom: 24px;">
+                <form action="/camps" method="get" style="position: relative;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-sec)" stroke-width="2" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" name="q" class="form-input" placeholder="Search by name, location, or officer..." th:value="${query}" style="padding-left: 40px;">
+                </form>
+            </div>
+
+            <!-- Empty State -->
+            <div class="glass empty-state" th:if="${camps != null and camps.isEmpty()}">
+                <p style="color: var(--ink-sec);">No camps match your search. Try a different name or location.</p>
+            </div>
+
+            <!-- Camps Grid -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;" th:if="${camps != null and !camps.isEmpty()}">
+                <div class="glass" style="padding: 24px; transition: transform .2s;" th:each="camp : ${camps}">
+                    <div class="flex items-start justify-between gap-3 mb-4">
+                        <div>
+                            <h3 style="font-family: var(--font-display); font-weight: 600; color: var(--navy);" th:text="${camp.name}">Camp Name</h3>
+                            <p style="font-size: 14px; color: var(--ink-sec); margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                <span th:text="${camp.locationName}">Location</span>
+                            </p>
+                        </div>
+                        <span class="badge badge-green" th:if="${camp.active}">
+                            <span class="relative flex w-1.5 h-1.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full w-1.5 h-1.5 bg-green-400"></span></span>
+                            Active
+                        </span>
+                        <span class="badge" th:unless="${camp.active}" style="background: var(--bg-light); color: var(--ink-muted); border: 1px solid var(--border);">Inactive</span>
+                    </div>
+                    <div th:if="${camp.capacity != null}" style="margin-bottom:14px;">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;">
+                            <span style="font-family:var(--font-mono);color:var(--ink-muted);letter-spacing:.5px;">OCCUPANCY</span>
+                            <span style="font-weight:700;color:var(--navy);" th:text="${camp.occupancy + ' / ' + camp.capacity + ' beds'}">0 / 0 beds</span>
+                        </div>
+                        <div style="height:8px;background:#eef3f7;border-radius:6px;overflow:hidden;">
+                            <div th:style="'width:' + ${camp.capacity > 0 ? camp.occupancy * 100 / camp.capacity : 0} + '%;height:100%;border-radius:6px;background:' + ${camp.capacity > 0 ? (camp.occupancy * 100 / camp.capacity >= 90 ? '#dc2626' : (camp.occupancy * 100 / camp.capacity >= 70 ? '#f59e0b' : '#16a34a')) : '#16a34a'} + ';'" style="height:100%;"></div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid var(--border);">
+                        <div>
+                            <p style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);">OFFICER IN CHARGE</p>
+                            <p style="font-size: 14px; font-weight: 500; color: var(--ink); margin-top: 4px;" th:text="${camp.officerName}">Officer</p>
+                        </div>
+                        <a th:href="'tel:' + ${camp.contactNumber}" class="btn btn-ghost btn-sm" style="font-family: var(--font-mono);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                            <span th:text="${camp.contactNumber}">Phone</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><div class="footer-brand"><div class="footer-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><span class="footer-brand-text">Aasha</span></div><p class="footer-desc">AI-powered platform reuniting families separated by natural disasters across India.</p></div>
+                <div><h4 class="footer-title">Services</h4>                    <ul class="footer-links"><li><a href="/search">Find Missing Person</a></li><li><a href="/camps">Relief Camps</a></li></ul></div>
+                <div><h4 class="footer-title">Emergency</h4><ul class="footer-links"><li>NDMA: <span style="color:#fbbf24;">1078</span></li><li>Police: <span style="color:#fbbf24;">100</span></li></ul></div>
+            </div>
+            <div class="footer-bottom"><p>© 2026 Aasha. Smart India Hackathon.</p><p style="font-family:var(--font-mono);">Built with empathy for every missing soul.</p></div>
+        </div>
+    </footer>
+    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)"><div class="mobile-nav-panel" onclick="event.stopPropagation()"><div class="flex justify-between items-center"><span style="font-weight:800;font-size:18px;color:var(--navy);">Aasha</span><button class="mobile-nav-close" aria-label="Close navigation" onclick="toggleMobileNav()">&times;</button></div>            <nav class="mobile-nav-links"><a href="/" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search">Find a Loved One</a><a href="/critical" sec:authorize="hasRole('OFFICIAL')">Critical</a><a href="/camps" class="active">Relief Camps</a><a href="/about">About</a><a href="/app.html">Get App</a></nav></div></div>
+    <script>function toggleMobileNav(){const n=document.getElementById('mobileNav');n.classList.toggle('open');document.body.style.overflow=n.classList.contains('open')?'hidden':'';}function closeMobileNav(e){if(e.target.id==='mobileNav')toggleMobileNav();}</script>
+    <div id="aashaSosMount" sec:authorize="isAuthenticated() and !hasRole('OFFICIAL')"></div>
+    <script th:src="@{/js/aasha-live.js}"></script>
+</body>
+</html>
