@@ -1,0 +1,230 @@
+00:00 +0: loading C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart
+00:00 +0: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies the disaster center as red
+00:00 +1: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies 20 percent as red
+00:00 +2: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: keeps exactly 30 percent red and moves just above it to yellow
+00:00 +3: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies 50 percent as yellow
+00:00 +4: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies 80 percent as green
+00:00 +5: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: keeps exactly 70 percent yellow and moves just above it to green
+00:00 +6: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies the radius boundary as green
+00:00 +7: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: classifies outside the radius as safe
+00:00 +8: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: returns unknown for zero radius and invalid coordinates
+00:00 +9: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: calculates a known one degree latitude distance
+00:00 +10: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/safety_calculator_test.dart: finds the nearest active camp with coordinates
+00:00 +11: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: parses an active alert response
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      new AppDatabase.open (package:aasha/data/local/database/app_database.dart:146:33)
+#6      new LocalDatabase._ (package:aasha/data/local/database/app_database.dart:153:44)
+#7      LocalDatabase.instance (package:aasha/data/local/database/app_database.dart:152:55)
+#8      LocalDatabase.instance (package:aasha/data/local/database/app_database.dart)
+#9      new SyncService (package:aasha/data/sync/sync_service.dart:36:46)
+#10     SyncService.instance (package:aasha/data/sync/sync_service.dart:28:39)
+#11     SyncService.instance (package:aasha/data/sync/sync_service.dart)
+#12     new LocalEmergencyRepository (package:aasha/features/emergency/data/emergency_repository.dart:37:49)
+#13     new SpringBootEmergencyRepository (package:aasha/features/emergency/data/spring_boot_emergency_repository.dart:33:26)
+#14     main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:25:24)
+#15     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:253:25)
+<asynchronous suspension>
+#16     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:11)
+<asynchronous suspension>
+#17     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:9)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:00 +12: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: retains coordinates when an alert has no radius
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:21:32)
+#6      Declarer._runSetUps.<anonymous closure> (package:test_api/src/backend/declarer.dart:434:61)
+#7      Future.forEach.<anonymous closure> (dart:async/future.dart:695:26)
+#8      Future.doWhile.<anonymous closure> (dart:async/future.dart:753:26)
+#9      StackZoneSpecification._registerUnaryCallback.<anonymous closure>.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:36)
+#10     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#11     StackZoneSpecification._registerUnaryCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:24)
+#12     _rootRunUnary (dart:async/zone_root.dart:48:47)
+#13     _CustomZone.runUnary (dart:async/zone.dart:816:35)
+#14     _CustomZone.runUnaryGuarded (dart:async/zone.dart:710:7)
+#15     _CustomZone.bindUnaryCallbackGuarded.<anonymous closure> (dart:async/zone.dart:748:26)
+#16     Future.doWhile (dart:async/future.dart:770:18)
+#17     Future.forEach (dart:async/future.dart:693:12)
+#18     Declarer._runSetUps (package:test_api/src/backend/declarer.dart:434:18)
+#19     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:21)
+#20     _rootRun (dart:async/zone_root.dart:35:13)
+#21     _CustomZone.run (dart:async/zone.dart:810:35)
+#22     _runZoned (dart:async/zone_api.dart:165:6)
+#23     runZoned (dart:async/zone_api.dart:91:10)
+#24     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#25     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#26     _rootRun (dart:async/zone_root.dart:35:13)
+#27     _CustomZone.run (dart:async/zone.dart:810:35)
+#28     _runZoned (dart:async/zone_api.dart:165:6)
+#29     runZoned (dart:async/zone_api.dart:91:10)
+#30     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#31     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:00 +13: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: serializes the SOS request fields for the backend contract
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:21:32)
+#6      Declarer._runSetUps.<anonymous closure> (package:test_api/src/backend/declarer.dart:434:61)
+#7      Future.forEach.<anonymous closure> (dart:async/future.dart:695:26)
+#8      Future.doWhile.<anonymous closure> (dart:async/future.dart:753:26)
+#9      StackZoneSpecification._registerUnaryCallback.<anonymous closure>.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:36)
+#10     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#11     StackZoneSpecification._registerUnaryCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:24)
+#12     _rootRunUnary (dart:async/zone_root.dart:48:47)
+#13     _CustomZone.runUnary (dart:async/zone.dart:816:35)
+#14     _CustomZone.runUnaryGuarded (dart:async/zone.dart:710:7)
+#15     _CustomZone.bindUnaryCallbackGuarded.<anonymous closure> (dart:async/zone.dart:748:26)
+#16     Future.doWhile (dart:async/future.dart:770:18)
+#17     Future.forEach (dart:async/future.dart:693:12)
+#18     Declarer._runSetUps (package:test_api/src/backend/declarer.dart:434:18)
+#19     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:21)
+#20     _rootRun (dart:async/zone_root.dart:35:13)
+#21     _CustomZone.run (dart:async/zone.dart:810:35)
+#22     _runZoned (dart:async/zone_api.dart:165:6)
+#23     runZoned (dart:async/zone_api.dart:91:10)
+#24     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#25     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#26     _rootRun (dart:async/zone_root.dart:35:13)
+#27     _CustomZone.run (dart:async/zone.dart:810:35)
+#28     _runZoned (dart:async/zone_api.dart:165:6)
+#29     runZoned (dart:async/zone_api.dart:91:10)
+#30     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#31     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:00 +14: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: skips malformed records without failing the list
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:21:32)
+#6      Declarer._runSetUps.<anonymous closure> (package:test_api/src/backend/declarer.dart:434:61)
+#7      Future.forEach.<anonymous closure> (dart:async/future.dart:695:26)
+#8      Future.doWhile.<anonymous closure> (dart:async/future.dart:753:26)
+#9      StackZoneSpecification._registerUnaryCallback.<anonymous closure>.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:36)
+#10     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#11     StackZoneSpecification._registerUnaryCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:24)
+#12     _rootRunUnary (dart:async/zone_root.dart:48:47)
+#13     _CustomZone.runUnary (dart:async/zone.dart:816:35)
+#14     _CustomZone.runUnaryGuarded (dart:async/zone.dart:710:7)
+#15     _CustomZone.bindUnaryCallbackGuarded.<anonymous closure> (dart:async/zone.dart:748:26)
+#16     Future.doWhile (dart:async/future.dart:770:18)
+#17     Future.forEach (dart:async/future.dart:693:12)
+#18     Declarer._runSetUps (package:test_api/src/backend/declarer.dart:434:18)
+#19     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:21)
+#20     _rootRun (dart:async/zone_root.dart:35:13)
+#21     _CustomZone.run (dart:async/zone.dart:810:35)
+#22     _runZoned (dart:async/zone_api.dart:165:6)
+#23     runZoned (dart:async/zone_api.dart:91:10)
+#24     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#25     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#26     _rootRun (dart:async/zone_root.dart:35:13)
+#27     _CustomZone.run (dart:async/zone.dart:810:35)
+#28     _runZoned (dart:async/zone_api.dart:165:6)
+#29     runZoned (dart:async/zone_api.dart:91:10)
+#30     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#31     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+Skipping malformed emergency alert: FormatException: Invalid emergency alert
+00:00 +15: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: uses cached alerts after a network failure
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:21:32)
+#6      Declarer._runSetUps.<anonymous closure> (package:test_api/src/backend/declarer.dart:434:61)
+#7      Future.forEach.<anonymous closure> (dart:async/future.dart:695:26)
+#8      Future.doWhile.<anonymous closure> (dart:async/future.dart:753:26)
+#9      StackZoneSpecification._registerUnaryCallback.<anonymous closure>.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:36)
+#10     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#11     StackZoneSpecification._registerUnaryCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:24)
+#12     _rootRunUnary (dart:async/zone_root.dart:48:47)
+#13     _CustomZone.runUnary (dart:async/zone.dart:816:35)
+#14     _CustomZone.runUnaryGuarded (dart:async/zone.dart:710:7)
+#15     _CustomZone.bindUnaryCallbackGuarded.<anonymous closure> (dart:async/zone.dart:748:26)
+#16     Future.doWhile (dart:async/future.dart:770:18)
+#17     Future.forEach (dart:async/future.dart:693:12)
+#18     Declarer._runSetUps (package:test_api/src/backend/declarer.dart:434:18)
+#19     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:21)
+#20     _rootRun (dart:async/zone_root.dart:35:13)
+#21     _CustomZone.run (dart:async/zone.dart:810:35)
+#22     _runZoned (dart:async/zone_api.dart:165:6)
+#23     runZoned (dart:async/zone_api.dart:91:10)
+#24     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#25     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#26     _rootRun (dart:async/zone_root.dart:35:13)
+#27     _CustomZone.run (dart:async/zone.dart:810:35)
+#28     _runZoned (dart:async/zone_api.dart:165:6)
+#29     runZoned (dart:async/zone_api.dart:91:10)
+#30     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#31     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:00 +16: C:/Users/Udaypratap Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart: calculates relevance only for geographic alerts
+WARNING (drift): It looks like you've created the database class AppDatabase multiple times. When these two databases use the same QueryExecutor, race conditions will occur and might corrupt the database. 
+Try to follow the advice at https://drift.simonbinder.eu/faq/#using-the-database or, if you know what you're doing, set driftRuntimeOptions.dontWarnAboutMultipleDatabases = true
+Here is the stacktrace from when the database was opened a second time:
+#0      GeneratedDatabase._handleInstantiated (package:drift/src/runtime/api/db_base.dart:96:30)
+#1      GeneratedDatabase._whenConstructed (package:drift/src/runtime/api/db_base.dart:73:12)
+#2      new GeneratedDatabase (package:drift/src/runtime/api/db_base.dart:64:5)
+#3      new _$AppDatabase (package:aasha/data/local/database/app_database.g.dart:4434:36)
+#4      new AppDatabase (package:aasha/data/local/database/app_database.dart)
+#5      main.<anonymous closure> (file:///C:/Users/Udaypratap%20Singh/IdeaProjects/Aasha_before_ppt_round/flutter-app/test/emergency_alert_repository_test.dart:21:32)
+#6      Declarer._runSetUps.<anonymous closure> (package:test_api/src/backend/declarer.dart:434:61)
+#7      Future.forEach.<anonymous closure> (dart:async/future.dart:695:26)
+#8      Future.doWhile.<anonymous closure> (dart:async/future.dart:753:26)
+#9      StackZoneSpecification._registerUnaryCallback.<anonymous closure>.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:36)
+#10     StackZoneSpecification._run (package:stack_trace/src/stack_zone_specification.dart:207:15)
+#11     StackZoneSpecification._registerUnaryCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:127:24)
+#12     _rootRunUnary (dart:async/zone_root.dart:48:47)
+#13     _CustomZone.runUnary (dart:async/zone.dart:816:35)
+#14     _CustomZone.runUnaryGuarded (dart:async/zone.dart:710:7)
+#15     _CustomZone.bindUnaryCallbackGuarded.<anonymous closure> (dart:async/zone.dart:748:26)
+#16     Future.doWhile (dart:async/future.dart:770:18)
+#17     Future.forEach (dart:async/future.dart:693:12)
+#18     Declarer._runSetUps (package:test_api/src/backend/declarer.dart:434:18)
+#19     Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:252:21)
+#20     _rootRun (dart:async/zone_root.dart:35:13)
+#21     _CustomZone.run (dart:async/zone.dart:810:35)
+#22     _runZoned (dart:async/zone_api.dart:165:6)
+#23     runZoned (dart:async/zone_api.dart:91:10)
+#24     Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:250:17)
+#25     Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:318:17)
+#26     _rootRun (dart:async/zone_root.dart:35:13)
+#27     _CustomZone.run (dart:async/zone.dart:810:35)
+#28     _runZoned (dart:async/zone_api.dart:165:6)
+#29     runZoned (dart:async/zone_api.dart:91:10)
+#30     Invoker._waitForOutstandingCallbacks (package:test_api/src/backend/invoker.dart:314:5)
+#31     Invoker._onRun.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/invoker.dart:457:21)
+<asynchronous suspension>
+This warning will only appear on debug builds.
+00:00 +17: All tests passed!
