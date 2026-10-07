@@ -1,0 +1,51 @@
+# Java / Gradle
+build/
+.gradle/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.lock
+!pubspec.lock
+
+# Environment / Secrets
+**/application-local.properties
+*.env
+.env.local
+
+# Database
+*.db
+*.sqlite
+
+# MinIO
+.minio/
+
+# Android
+android/.gradle/
+android/app/build/
+android/local.properties
+android/key.properties
+*.jks
+*.keystore
