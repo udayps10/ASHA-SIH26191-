@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aasha — QR Codes</title>
+<link rel="icon" type="image/png" href="/images/asha-logo.png">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,-apple-system,sans-serif; background:#f2f6f9; color:#0b2d47; min-height:100vh; }
+  .bar { background:#0b2d47; color:#fff; padding:16px 24px; display:flex; align-items:center; gap:12px; border-bottom:4px solid #e8a33d; }
+  .bar img { width:34px; height:34px; object-fit:contain; }
+  .bar h1 { font-size:19px; font-weight:700; }
+  .bar span { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9fc3d8; margin-left:4px; }
+  .wrap { max-width:1080px; margin:0 auto; padding:28px 20px 50px; }
+  .note { background:#fff; border:1px solid #dce6ee; border-left:4px solid #e8a33d; border-radius:10px; padding:13px 16px; font-size:13.5px; color:#32566c; margin-bottom:26px; line-height:1.55; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:20px; }
+  .card { background:#fff; border:1px solid #dce6ee; border-radius:16px; padding:22px 16px 18px; text-align:center; box-shadow:0 6px 18px rgba(11,45,71,.06); transition:transform .15s; }
+  .card:hover { transform:translateY(-3px); }
+  .card img.qr { width:190px; height:190px; image-rendering:pixelated; border-radius:8px; }
+  .card h2 { font-size:15px; margin-top:14px; color:#0b2d47; }
+  .card a { display:block; margin-top:7px; font-family:Consolas,'Courier New',monospace; font-size:11.5px; color:#1668a5; word-break:break-all; text-decoration:none; }
+  .card a:hover { text-decoration:underline; }
+  .tag { display:inline-block; margin-top:9px; font-size:10px; letter-spacing:.8px; text-transform:uppercase; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .t-web { background:#e6f0fa; color:#1668a5; }
+  .t-app { background:#e6f4ea; color:#137333; }
+  .t-api { background:#fef3e2; color:#b45309; }
+  .foot { text-align:center; margin-top:34px; font-size:12px; color:#7a93a5; }
+  @media(max-width:520px){ .grid{grid-template-columns:1fr 1fr} .card img.qr{width:150px;height:150px} }
+</style>
+</head>
+<body>
+<div class="bar"><img src="/images/asha-logo.png" alt=""><h1>Aasha</h1><span>Scan &amp; Connect</span></div>
+<div class="wrap">
+  <div class="note"><strong>Scan from any phone on the same Wi-Fi network.</strong> All addresses use this machine's LAN IP (<code>192.168.1.33</code>). Services must be running: website &amp; backend on <code>:8080</code>, app on <code>:3000</code>, AI service on <code>:8000</code>.</div>
+  <div class="grid">
+    <div class="card"><img class="qr" src="/images/qr/qr_website.png" alt="Website QR"><h2>Aasha Website</h2><a href="http://192.168.1.33:8080/">http://192.168.1.33:8080/</a><span class="tag t-web">Public Site</span></div>
+    <div class="card"><img class="qr" src="/images/qr/qr_app.png" alt="App QR"><h2>Aasha App</h2><a href="http://192.168.1.33:3000/">http://192.168.1.33:3000/</a><span class="tag t-app">Flutter Web</span></div>
+    <div class="card"><img class="qr" src="/images/qr/qr_dashboard.png" alt="Dashboard QR"><h2>Officer Dashboard</h2><a href="http://192.168.1.33:8080/dashboard">http://192.168.1.33:8080/dashboard</a><span class="tag t-web">Login Required</span></div>
+    <div class="card"><img class="qr" src="/images/qr/qr_api.png" alt="API QR"><h2>Backend API</h2><a href="http://192.168.1.33:8080/api/camps/list/active">http://192.168.1.33:8080/api/camps/list/active</a><span class="tag t-api">Live JSON</span></div>
+    <div class="card"><img class="qr" src="/images/qr/qr_health.png" alt="Health QR"><h2>Backend Health</h2><a href="http://192.168.1.33:8080/health">http://192.168.1.33:8080/health</a><span class="tag t-api">Status Check</span></div>
+    <div class="card"><img class="qr" src="/images/qr/qr_ai.png" alt="AI Service QR"><h2>AI Matching Service</h2><a href="http://192.168.1.33:8000/docs">http://192.168.1.33:8000/docs</a><span class="tag t-api">Swagger Docs</span></div>
+  </div>
+  <div class="foot">© 2026 Aasha · QR hub at <code>/qr.html</code> · Smart India Hackathon</div>
+</div>
+</body>
+</html>
