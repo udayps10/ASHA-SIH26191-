@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aasha - AI Disaster Response</title>
+    <link rel="stylesheet" th:href="@{/css/aasha-design-system.css}">
+    <link rel="stylesheet" th:href="@{/css/aasha-reference.css}">
+    <link rel="icon" type="image/png" href="/images/asha-logo.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <style>.entry-map{padding:0;background:#e8f1f6;position:relative;height:172px}#homeMap{position:absolute;inset:0;z-index:1}.entry-map>span{position:absolute;left:12px;bottom:12px;z-index:500;pointer-events:none}</style>
+    <script defer th:src="@{/js/aasha-reference.js}"></script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-brand">
+                <div class="header-brand-icon">
+                    <img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;">
+                </div>
+                <div>
+                    <span class="header-brand-text">Aasha</span>
+                    <span class="header-brand-tag">Reunification Network</span>
+                </div>
+            </a>
+
+            <nav class="header-nav"><a href="/dashboard" class="header-link" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search" class="header-link" sec:authorize="isAuthenticated()">Find a Loved One</a><a href="/critical" class="header-link" sec:authorize="hasRole('OFFICIAL')">Critical</a><a href="/about#how-it-works" class="header-link">How it works</a><a href="/about#privacy" class="header-link">Safety &amp; privacy</a><a href="/about" class="header-link">Resources</a><a href="/app.html" class="header-link">Get App</a></nav>
+
+            <div class="flex items-center gap-3">
+
+                <div th:if="${signedIn}" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 13px; color: var(--ink-sec);" th:text="${accountName}">user</span>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Logout</button>
+                    </form>
+                </div>
+                <div th:if="${!signedIn}">
+                    <a href="/login" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Login</a>
+                </div>
+            </div>
+
+            <button class="header-toggle" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" onclick="toggleMobileNav()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <main id="main" class="page entry-page">
+      <div class="response-strip"><div class="container"><span>PEOPLE BELONG TOGETHER</span><a href="/about">About the reunification network <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a></div></div>
+      <section class="reunion-hero entry-hero">
+        <div class="container reunion-grid">
+          <div class="reunion-copy">
+            <p class="eyebrow"><span></span> PEOPLE BELONG TOGETHER</p>
+            <h1>Reunite families<br><span>after disasters.</span></h1>
+            <p class="lead">Aasha connects missing and found persons through records from disaster-response officials, shelters and relief teams.</p>
+            <p class="entry-note">Sign in to find a loved one, view possible matches and access response information.</p>
+          </div>
+          <section class="entry-card" aria-label="Get started with Aasha">
+            <div class="entry-map" aria-label="Live map of relief camps and alert zones"><div id="homeMap"></div><span style="position:absolute;left:12px;top:12px;bottom:auto;z-index:500;background:#fffffff2;border-radius:30px;padding:7px 10px;font-size:10px;display:inline-flex;gap:12px;align-items:center;pointer-events:none;"><b style="font-size:9px;letter-spacing:.5px;color:#32566c;">LIVE ZONES</b><span style="color:#16a34a;">&#9679;</span> Camps <span style="color:#f59e0b;">&#9679;</span> Warning <span style="color:#dc2626;">&#9679;</span> Critical</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 10-8 10S4 17 4 12V6z"/><path d="m8 12 3 3 5-6"/></svg> A connection can bring hope.</span></div>
+            <div class="entry-actions" sec:authorize="!isAuthenticated()">
+              <a class="entry-action" href="/login"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></span><span><strong>Login as Normal User</strong><small>Search for loved ones, get updates</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+              <a class="entry-action" href="/login?role=official"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 10-8 10S4 17 4 12V6z"/><path d="m8 12 3 3 5-6"/></svg></span><span><strong>Login as Official</strong><small>For response teams and officials</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+              <a class="entry-action" href="/register"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 4v16M4 12h16"/></svg></span><span><strong>Create Account</strong><small>New user? Register here</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+              <div class="entry-separator"></div>
+                <a class="entry-action entry-download" href="/app.html" aria-label="Get Aasha App: QR code and Android download"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M10 18h4"/></svg></span><span><strong>Get Aasha App</strong><small>Android APK · Scan or download</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+            </div>
+            <div class="entry-actions" sec:authorize="isAuthenticated()">
+                <a class="entry-action" href="/dashboard" sec:authorize="hasRole('OFFICIAL')"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 3 9v11h6v-6h6v6h6V9z"/></svg></span><span><strong>Go to Officer Dashboard</strong><small>Record entries, manage camps, track cases</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+                <a class="entry-action" href="/search"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><span><strong>Find a Loved One</strong><small>Search records and view possible matches</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+                <a class="entry-action" href="/camps"><span class="entry-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-6h6v6"/></svg></span><span><strong>Relief Camps</strong><small>Browse live camp directory with contacts</small></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <div class="footer-brand-icon">
+                            <img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;">
+                        </div>
+                        <span class="footer-brand-text">Aasha</span>
+                    </div>
+                    <p class="footer-desc">AI-powered platform reuniting families separated by natural disasters across India. Built for Smart India Hackathon 2026.</p>
+                    <div class="footer-status">
+                        <span class="relative flex w-2 h-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full w-2 h-2 bg-green-400"></span></span>
+                        Connecting families with response records
+                    </div>
+                </div>
+                <div>
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="/search">Find Missing Person</a></li>
+                        <li><a href="/camps">Relief Camps</a></li>
+                        <li><a href="/about">How It Works</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="footer-title">Emergency</h4>
+                    <ul class="footer-links">
+                        <li>NDRF: <span style="color: #fbbf24;">011-24363260</span></li>
+                        <li>NDMA: <span style="color: #fbbf24;">1078</span></li>
+                        <li>Police: <span style="color: #fbbf24;">100</span></li>
+                        <li>Ambulance: <span style="color: #fbbf24;">108</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Aasha Disaster Response. Smart India Hackathon.</p>
+                <p style="font-family: var(--font-mono);">Built with empathy for every missing soul.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)">
+        <div class="mobile-nav-panel" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center">
+                <span style="font-weight:800;font-size:18px;color:var(--navy);">Aasha</span>
+                <button class="mobile-nav-close" aria-label="Close navigation" onclick="toggleMobileNav()">&times;</button>
+            </div>
+            <nav class="mobile-nav-links"><a href="/dashboard" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search" sec:authorize="isAuthenticated()">Find a Loved One</a><a href="/critical" sec:authorize="hasRole('OFFICIAL')">Critical Search</a><a href="/about#how-it-works">How it works</a><a href="/about#privacy">Safety &amp; privacy</a><a href="/about">Resources</a><a href="/login" sec:authorize="!isAuthenticated()">Login</a><a href="/register" sec:authorize="!isAuthenticated()">Create Account</a><a href="/app.html">Get App</a></nav>
+        </div>
+    </div>
+
+    <script>
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobileNav');
+            nav.classList.toggle('open');
+            document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+        }
+        function closeMobileNav(e) {
+            if (e.target.id === 'mobileNav') toggleMobileNav();
+        }
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        (function () {
+            var map = L.map('homeMap', { scrollWheelZoom: false, attributionControl: true, zoomControl: false })
+                .setView([20.5937, 78.9629], 5);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+            L.control.zoom({ position: 'topright' }).addTo(map);
+            L.marker([20.5937, 78.9629]).addTo(map).bindPopup('Aasha — reunifying families across India');
+            fetch('/api/camps/list/active').then(function (r) { return r.ok ? r.json() : []; }).then(function (list) {
+                list.forEach(function (c) {
+                    if (c.latitude == null || c.longitude == null) return;
+                    L.circleMarker([c.latitude, c.longitude], { radius: 7, color: '#ffffff', weight: 2, fillColor: '#16a34a', fillOpacity: 0.95 })
+                        .addTo(map).bindPopup('<b>' + c.name + '</b><br>' + (c.locationName || '') + (c.contactNumber ? '<br>' + c.contactNumber : ''));
+                });
+            }).catch(function () {});
+            fetch('/api/alerts/active').then(function (r) { return r.ok ? r.json() : []; }).then(function (list) {
+                list.forEach(function (a) {
+                    if (a.latitude == null || a.longitude == null) return;
+                    var color = a.severity === 'CRITICAL' ? '#dc2626' : (a.severity === 'WARNING' ? '#f59e0b' : '#2563eb');
+                    L.circle([a.latitude, a.longitude], { radius: (a.radiusKm || 10) * 1000, color: color, weight: 2, fillColor: color, fillOpacity: 0.15 })
+                        .addTo(map).bindPopup('<b>' + a.title + '</b><br>' + (a.message || ''));
+                });
+            }).catch(function () {});
+            setTimeout(function () { map.invalidateSize(); }, 300);
+        })();
+    </script>
+    <div id="aashaSosMount" sec:authorize="isAuthenticated() and !hasRole('OFFICIAL')"></div>
+    <script th:src="@{/js/aasha-live.js}"></script>
+</body>
+</html>
