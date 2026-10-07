@@ -1,0 +1,48 @@
+﻿# Flutter
+flutter-app/build/
+flutter-app/.dart_tool/
+flutter-app/.packages
+flutter-app/android/.gradle/
+flutter-app/android/app/build/
+
+# Spring Boot
+spring-boot-backend/build/
+spring-boot-backend/.gradle/
+spring-boot-backend/bin/
+
+# AI Service
+ai-service/.venv/
+ai-service/__pycache__/
+ai-service/.pytest_cache/
+ai-service/*.pyc
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+*.env.local
+
+# Logs
+*.log
+*_log.txt
+flutter-app/flutter_device_log.txt
+flutter-app/flutter_web_log.txt
+
+# Build / tooling artifacts
+*.hprof
+*.pyc
+spring-boot-backend/out/
+flutter-app/.flutter-plugins
+flutter-app/.flutter-plugins-dependencies
+flutter-app/android/local.properties
+flutter-app/ios/Pods/
+flutter-app/ios/.symlinks/
+
+.local/
