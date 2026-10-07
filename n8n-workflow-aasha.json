@@ -1,0 +1,97 @@
+{
+  "id": "aashaWhatsAppAlerts",
+  "name": "Aasha WhatsApp Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aasha-whatsapp",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const record = $input.first().json.body;\nif (!record || typeof record !== 'object') throw new Error('Missing webhook body');\nconst phone = String(record.userPhone || '').replace(/[\\s()+-]/g, '');\nif (!/^[1-9][0-9]{7,14}$/.test(phone)) throw new Error('Phone must include country code');\nconst template = $env.WHATSAPP_TEMPLATE_NAME;\nconst language = $env.WHATSAPP_TEMPLATE_LANGUAGE;\nif (!template || !language) throw new Error('Configure an approved WhatsApp template and language');\nif (!$env.WHATSAPP_PHONE_NUMBER_ID || !$env.WHATSAPP_API_VERSION) throw new Error('Configure Meta phone number ID and API version');\nreturn [{json: {payload: {\n  messaging_product: 'whatsapp', to: phone, type: 'template',\n  template: {name: template, language: {code: language}, components: [{type: 'body', parameters:\n    [record.name, record.campName, record.officerContact].map(value => ({type: 'text', text: String(value || 'Not available')}))\n  }]}\n}}}];"
+      },
+      "id": "build-message",
+      "name": "Build WhatsApp Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $env.WHATSAPP_API_VERSION }}/{{ $env.WHATSAPP_PHONE_NUMBER_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.payload }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "WHATSAPP_API_TOKEN",
+          "name": "WhatsApp API Token"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Build WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build WhatsApp Message": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "aasha"
+    }
+  ],
+  "active": false
+}
