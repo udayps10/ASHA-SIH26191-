@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Aasha</title>
+    <link rel="stylesheet" th:href="@{/css/aasha-design-system.css}">
+    <link rel="stylesheet" th:href="@{/css/aasha-reference.css}">
+    <link rel="icon" type="image/png" href="/images/asha-logo.png">
+    <script defer th:src="@{/js/aasha-reference.js}"></script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-brand"><div class="header-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><div><span class="header-brand-text">Aasha</span><span class="header-brand-tag">Reunification Network</span></div></a>
+            <nav class="header-nav"><a href="/" class="header-link" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" class="header-link" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search" class="header-link">Find a Loved One</a><a href="/critical" class="header-link" sec:authorize="hasRole('OFFICIAL')">Critical</a><a href="/camps" class="header-link">Relief Camps</a><a href="/about" class="header-link active">About</a><a href="/app.html" class="header-link">Get App</a></nav>
+            <div class="flex items-center gap-3">
+                <span class="badge badge-live">
+                    <span class="relative flex w-2 h-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full w-2 h-2 bg-green-400"></span>
+                    </span>
+                    LIVE
+                </span>
+                <div sec:authorize="isAuthenticated()" style="display: flex; align-items: center; gap: 12px;">
+                    <span style="font-size: 13px; color: var(--ink-sec);" sec:authentication="name">user</span>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Logout</button>
+                    </form>
+                </div>
+                <div sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="btn btn-outline" style="font-size: 13px; padding: 6px 16px;">Login</a>
+                </div>
+            </div>
+            <button class="header-toggle" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" onclick="toggleMobileNav()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+    </header>
+
+    <main id="main" class="page">
+        <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+            <!-- Hero -->
+            <div class="about-hero">
+                <span class="section-header-text" style="display:block; margin-bottom: 12px;">About Aasha</span>
+                <h1 class="h1">Technology in service of<br><span class="text-gradient-teal">human dignity.</span></h1>
+                <p style="margin-top: 24px;">Aasha (आशा — Hindi for "hope") is the national AI-powered disaster response platform for locating missing persons during natural calamities. Developed under the National Disaster Management Authority (NDMA) initiative to ensure rapid family reunification across India.</p>
+            </div>
+
+            <!-- How it works -->
+            <section class="mb-20">
+                <div class="section-header">
+                    <span class="section-header-text">Process</span>
+                    <div class="section-header-line"></div>
+                </div>
+
+                <div class="steps-list" id="how-it-works">
+                    <div class="steps-line"></div>
+                    <div class="step-item">
+                        <div class="step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+                        </div>
+                        <div class="glass step-content">
+                            <div class="step-num">01</div>
+                            <h3 class="step-title">Relief Officers Register Survivors</h3>
+                            <p class="step-desc">Officers at camps enter survivor details — name, age, photo, and medical status — into the Aasha platform via mobile or web.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                        </div>
+                        <div class="glass step-content">
+                            <div class="step-num">02</div>
+                            <h3 class="step-title">AI Normalizes & Indexes Records</h3>
+                            <p class="step-desc">Names are phonetically normalized across 12 Indian languages. Photos are embedded into a vector database for facial similarity search.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        </div>
+                        <div class="glass step-content">
+                            <div class="step-num">03</div>
+                            <h3 class="step-title">Families Sign In and Search</h3>
+                            <p class="step-desc">Sign in to search by name, age, location or photo. Search and response records are available only after login.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                        </div>
+                        <div class="glass step-content">
+                            <div class="step-num">04</div>
+                            <h3 class="step-title">AI Surfaces Best Matches</h3>
+                            <p class="step-desc">Our model ranks results by phonetic similarity, age proximity, and district overlap — returning matches even for misspelled names.</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-icon" style="background: linear-gradient(135deg, #0d9488, #0891b2); border: none;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                        </div>
+                        <div class="glass step-content">
+                            <div class="step-num">05</div>
+                            <h3 class="step-title">Families Reunite</h3>
+                            <p class="step-desc">Confirmed matches are communicated via SMS, WhatsApp, or in-app notification. Officers coordinate handover with the family.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats -->
+            <section class="about-stats">
+                <h2 style="font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--navy); margin-bottom: 32px;">Impact in Numbers</h2>
+                <div class="about-stats-grid">
+                    <div class="text-center"><div class="about-stat-value">2,847+</div><div class="about-stat-label">Families Reunited</div></div>
+                    <div class="text-center"><div class="about-stat-value">&lt; 4 hrs</div><div class="about-stat-label">Avg. Reunion Time</div></div>
+                    <div class="text-center"><div class="about-stat-value">94.2%</div><div class="about-stat-label">Search Accuracy</div></div>
+                    <div class="text-center"><div class="about-stat-value">12 States</div><div class="about-stat-label">Coverage Area</div></div>
+                </div>
+            </section>
+
+            <!-- Privacy -->
+            <section class="mb-20">
+                <div class="section-header">
+                    <span class="section-header-text">Privacy & Safety</span>
+                    <div class="section-header-line"></div>
+                </div>
+                <div class="privacy-grid" id="privacy">
+                    <div class="glass privacy-card">
+                        <div class="privacy-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></div>
+                        <div><h4 class="privacy-title">No Aadhaar stored</h4><p class="privacy-desc">We use Aadhaar only for identity verification at entry. Numbers are never persisted in our database.</p></div>
+                    </div>
+                    <div class="glass privacy-card">
+                        <div class="privacy-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></div>
+                        <div><h4 class="privacy-title">Photo encryption</h4><p class="privacy-desc">All photos are AES-256 encrypted at rest. Facial embeddings are stored separately from personal details.</p></div>
+                    </div>
+                    <div class="glass privacy-card">
+                        <div class="privacy-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></div>
+                        <div><h4 class="privacy-title">Critical record isolation</h4><p class="privacy-desc">Deceased and critical records are in an isolated schema, access-logged, and require officer authentication.</p></div>
+                    </div>
+                    <div class="glass privacy-card">
+                        <div class="privacy-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></div>
+                        <div><h4 class="privacy-title">Right to erasure</h4><p class="privacy-desc">All person records are auto-purged 90 days after a disaster is officially declared over by NDMA.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="about-cta">
+                <h2 style="font-family: var(--font-display); font-weight: 800; font-size: 28px; color: var(--navy); margin-bottom: 16px;">Start Searching Now</h2>
+                <p style="font-size: 18px; color: var(--ink-sec); margin-bottom: 32px; max-width: 560px; margin-left: auto; margin-right: auto;">If you have a missing family member from a recent disaster in India, our database may already have their record.</p>
+                <div class="flex justify-center gap-4 flex-wrap">
+                    <a href="/search" class="btn btn-primary btn-lg">Search for a Person</a>
+                    <a href="/camps" class="btn btn-ghost btn-lg">Browse Relief Camps</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><div class="footer-brand"><div class="footer-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><span class="footer-brand-text">Aasha</span></div><p class="footer-desc">AI-powered platform reuniting families separated by natural disasters across India.</p></div>
+                <div><h4 class="footer-title">Services</h4>                    <ul class="footer-links"><li><a href="/search">Find Missing Person</a></li><li><a href="/camps">Relief Camps</a></li></ul></div>
+                <div><h4 class="footer-title">Emergency</h4><ul class="footer-links"><li>NDMA: <span style="color:#fbbf24;">1078</span></li><li>Police: <span style="color:#fbbf24;">100</span></li></ul></div>
+            </div>
+            <div class="footer-bottom"><p>© 2026 Aasha. Smart India Hackathon.</p><p style="font-family:var(--font-mono);">Built with empathy for every missing soul.</p></div>
+        </div>
+    </footer>
+    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)"><div class="mobile-nav-panel" onclick="event.stopPropagation()"><div class="flex justify-between items-center"><span style="font-weight:800;font-size:18px;color:var(--navy);">Aasha</span><button class="mobile-nav-close" aria-label="Close navigation" onclick="toggleMobileNav()">&times;</button></div>            <nav class="mobile-nav-links"><a href="/" sec:authorize="!isAuthenticated()">Home</a><a href="/dashboard" sec:authorize="hasRole('OFFICIAL')">Dashboard</a><a href="/search">Find a Loved One</a><a href="/critical" sec:authorize="hasRole('OFFICIAL')">Critical</a><a href="/camps">Relief Camps</a><a href="/about" class="active">About</a><a href="/app.html">Get App</a></nav></div></div>
+    <script>function toggleMobileNav(){const n=document.getElementById('mobileNav');n.classList.toggle('open');document.body.style.overflow=n.classList.contains('open')?'hidden':'';}function closeMobileNav(e){if(e.target.id==='mobileNav')toggleMobileNav();}</script>
+</body>
+</html>
