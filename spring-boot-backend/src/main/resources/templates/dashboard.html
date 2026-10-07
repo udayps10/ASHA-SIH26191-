@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Dashboard - Aasha</title>
+    <link rel="stylesheet" th:href="@{/css/aasha-design-system.css}">
+    <link rel="stylesheet" th:href="@{/css/aasha-reference.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="icon" type="image/png" href="/images/asha-logo.png">
+    <script defer th:src="@{/js/aasha-reference.js}"></script>
+    <style>
+        .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:36px}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+        .form-field label{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;color:var(--ink-muted);text-transform:uppercase}
+        .form-field .form-input,.form-field select,.form-field textarea{width:100%}
+        .form-field textarea{min-height:74px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px;background:#fff}
+        .rec-table{width:100%;border-collapse:collapse;font-size:14px}
+        .rec-table th{text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:.6px;color:var(--ink-muted);text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border)}
+        .rec-table td{padding:10px;border-bottom:1px solid var(--border);color:var(--ink)}
+        .status-select{font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:8px;background:#fff}
+        #toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:13px 20px;border-radius:12px;font-size:14px;box-shadow:0 12px 30px #0b355040;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;z-index:99}
+        #toast.show{opacity:1;transform:translateY(0)}
+        @media(max-width:650px){.form-row{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="header-brand"><div class="header-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><div><span class="header-brand-text">Aasha</span><span class="header-brand-tag">Reunification Network</span></div></a>
+            <nav class="header-nav"><a href="/dashboard" class="header-link active">Dashboard</a><a href="/search" class="header-link">Find a Loved One</a><a href="/relocation.html" class="header-link">Relocation Planning</a><a href="/camps" class="header-link">Relief Camps</a><a href="/about" class="header-link">About</a></nav>
+            <div class="flex items-center gap-3">
+                <span class="badge badge-live"><span class="relative flex w-2 h-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full w-2 h-2 bg-green-400"></span></span>OFFICIAL</span>
+                <div sec:authorize="isAuthenticated()" style="display:flex;align-items:center;gap:12px;">
+                    <span style="font-size:13px;color:var(--ink-sec);" sec:authentication="name">officer</span>
+                    <form th:action="@{/logout}" method="post" style="margin:0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-outline" style="font-size:13px;padding:6px 16px;">Logout</button>
+                    </form>
+                </div>
+            </div>
+            <button class="header-toggle" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" onclick="toggleMobileNav()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+    </header>
+
+    <main id="main" class="page">
+        <div class="container" style="padding-top:40px;padding-bottom:80px;">
+            <span class="section-header-text">Response Command</span>
+            <h1 class="h1 mb-3">Officer Dashboard</h1>
+            <p style="font-size:18px;color:var(--ink-sec);margin-bottom:28px;">Welcome back, <strong th:text="${accountName}">Officer</strong>. Record entries, manage camps and track cases — everything the field app does, right here.</p>
+
+            <!-- Stats -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px;">
+                <div class="glass" style="padding:20px;border-left:4px solid var(--ashoka-blue);">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy);" th:text="${campCount}">0</div>
+                    <div class="stat-label">Relief Camps</div>
+                </div>
+                <div class="glass" style="padding:20px;border-left:4px solid var(--green);">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy);" th:text="${normalCount}">0</div>
+                    <div class="stat-label">Person Records</div>
+                </div>
+                <div class="glass" style="padding:20px;border-left:4px solid var(--accent-red, #EF3838);">
+                    <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--navy);" th:text="${criticalCount}">0</div>
+                    <div class="stat-label">Critical Records</div>
+                </div>
+            </div>
+
+            <!-- Entry forms -->
+            <div class="dash-grid">
+                <!-- Normal record -->
+                <section class="glass-bright" style="padding:24px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:4px;">Record Missing Person</h3>
+                    <p style="font-size:13px;color:var(--ink-sec);margin-bottom:18px;">Entry into the reunification registry.</p>
+                    <form id="normalForm" onsubmit="return submitRecord(event, '/api/normal-records', this)">
+                        <div class="form-row">
+                            <div class="form-field"><label>Full Name *</label><input name="name" class="form-input" required placeholder="e.g. Ravi Kumar"></div>
+                            <div class="form-field"><label>Age</label><input name="age" class="form-input" type="number" min="0" max="120" placeholder="e.g. 34"></div>
+                        </div>
+                        <div class="form-field"><label>Assigned Camp</label>
+                            <select name="campSelect" class="form-input" onchange="pickCamp(this)">
+                                <option value="">— Walk-in / no camp —</option>
+                                <option th:each="c : ${camps}" th:value="${c.id}" th:text="${c.name}" th:data-name="${c.name}" th:data-location="${c.locationName}">Camp</option>
+                            </select>
+                            <input type="hidden" name="campId" value=""><input type="hidden" name="campName" value="">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field"><label>Officer</label><input name="officerName" class="form-input" th:value="${officerName}"></div>
+                            <div class="form-field"><label>Contact</label><input name="officerContact" class="form-input" th:value="${officerContact}" placeholder="+91..."></div>
+                        </div>
+                        <div class="form-field"><label>Status</label>
+                            <select name="status" class="form-input"><option>AT_CAMP</option><option>TRANSFERRED</option><option>MATCHED</option><option>RELEASED</option></select>
+                        </div>
+                        <div class="form-field"><label>Additional Details</label><textarea name="additionalDetails" placeholder="Clothing, health condition, where found..."></textarea></div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Save Person Record</button>
+                    </form>
+                </section>
+
+                <!-- Critical record -->
+                <section class="glass-bright" style="padding:24px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:4px;">Record Critical / Unidentified</h3>
+                    <p style="font-size:13px;color:var(--ink-sec);margin-bottom:18px;">Injured or unidentified persons needing urgent family tracing.</p>
+                    <form id="criticalForm" onsubmit="return submitRecord(event, '/api/critical-records', this)">
+                        <div class="form-row">
+                            <div class="form-field"><label>Name / Alias *</label><input name="name" class="form-input" required placeholder="Unknown if unidentified"></div>
+                            <div class="form-field"><label>Age</label><input name="age" class="form-input" type="number" min="0" max="120" placeholder="e.g. 28"></div>
+                        </div>
+                        <div class="form-field"><label>Last Known Clothing</label><input name="lastKnownClothing" class="form-input" placeholder="e.g. red checked shirt, blue jeans"></div>
+                        <div class="form-field"><label>Found Location</label><input name="foundLocation" class="form-input" placeholder="e.g. NH-44 underpass, Panvel"></div>
+                        <div class="form-field"><label>Assigned Camp</label>
+                            <select name="campSelect" class="form-input" onchange="pickCamp(this)">
+                                <option value="">— Unassigned —</option>
+                                <option th:each="c : ${camps}" th:value="${c.id}" th:text="${c.name}" th:data-name="${c.name}" th:data-location="${c.locationName}">Camp</option>
+                            </select>
+                            <input type="hidden" name="campId" value=""><input type="hidden" name="campName" value="">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field"><label>Officer</label><input name="officerName" class="form-input" th:value="${officerName}"></div>
+                            <div class="form-field"><label>Contact</label><input name="officerContact" class="form-input" th:value="${officerContact}"></div>
+                        </div>
+                        <div class="form-field"><label>Status</label>
+                            <select name="status" class="form-input"><option>UNIDENTIFIED</option><option>IDENTIFIED</option><option>TREATED</option><option>RELEASED</option></select>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;background:#c22a2a;border-color:#c22a2a;">Save Critical Record</button>
+                    </form>
+                </section>
+
+                <!-- Camp -->
+                <section class="glass-bright" style="padding:24px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:4px;">Register Relief Camp</h3>
+                    <p style="font-size:13px;color:var(--ink-sec);margin-bottom:18px;">Add a camp so citizens can find it in the live directory.</p>
+                    <form id="campForm" onsubmit="return submitRecord(event, '/api/camps', this)">
+                        <div class="form-field"><label>Camp Name *</label><input name="name" class="form-input" required placeholder="e.g. Panvel Relief Camp"></div>
+                        <div class="form-field"><label>Location</label><input name="locationName" class="form-input" placeholder="e.g. Panvel, Raigad"></div>
+                        <div class="form-field"><label>Address</label><textarea name="address" placeholder="Full address..."></textarea></div>
+                        <div class="form-field"><label>Camp Location on Map *</label>
+                            <div id="campMap" style="height:230px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#eef3f7;"></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap;">
+                                <span id="campCoord" style="font-size:12px;color:var(--ink-sec);font-family:var(--font-mono);">Click the map to set the camp point</span>
+                                <button type="button" class="btn btn-ghost btn-sm" onclick="useMyLocCamp()">Use my location</button>
+                            </div>
+                            <input type="hidden" name="latitude" id="campLat">
+                            <input type="hidden" name="longitude" id="campLng">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field"><label>Officer In Charge</label><input name="officerName" class="form-input" th:value="${officerName}"></div>
+                            <div class="form-field"><label>Contact Number</label><input name="contactNumber" class="form-input" placeholder="+91..."></div>
+                        </div>
+                        <div class="form-field"><label>Capacity (people)</label><input name="capacity" class="form-input" type="number" min="0" placeholder="e.g. 250"></div>
+                        <input type="hidden" name="officerUid" th:value="${officerUid}">
+                        <input type="hidden" name="active" value="true">
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Create Camp</button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Incoming SOS: full-width so the table has room -->
+            <section class="glass" style="padding:24px;overflow-x:auto;margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);">Incoming SOS Requests</h3>
+                    <button class="btn btn-ghost btn-sm" type="button" onclick="loadSos()">Refresh</button>
+                </div>
+                <div id="sosList"><p style="color:var(--ink-sec);font-size:14px;">Loading…</p></div>
+            </section>
+
+            <!-- Alerts: broadcast form + managed list, side by side -->
+            <div class="dash-grid">
+                <section class="glass" style="padding:24px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:14px;">Broadcast Emergency Alert</h3>
+                    <form id="alertForm" onsubmit="return sendAlert(event)">
+                        <div class="form-field"><label>Title *</label><input name="title" class="form-input" required placeholder="e.g. Heavy flooding in Raigad"></div>
+                        <div class="form-row">
+                            <div class="form-field"><label>Type</label>
+                                <select name="type" class="form-input"><option>FLOOD</option><option>CYCLONE</option><option>EARTHQUAKE</option><option>LANDSLIDE</option><option>FIRE</option><option>OTHER</option></select>
+                            </div>
+                            <div class="form-field"><label>Severity</label>
+                                <select name="severity" class="form-input"><option>WARNING</option><option>CRITICAL</option><option>INFO</option></select>
+                            </div>
+                        </div>
+                        <div class="form-field"><label>Message</label><textarea name="message" style="min-height:56px;" placeholder="Short instruction for the ticker..."></textarea></div>
+                        <div class="form-row">
+                            <div class="form-field"><label>District</label><input name="district" class="form-input" placeholder="e.g. Raigad"></div>
+                            <div class="form-field"><label>State</label><input name="state" class="form-input" placeholder="e.g. Maharashtra"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%;">Publish Alert</button>
+                    </form>
+                </section>
+
+                <section class="glass" style="padding:24px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);">Managed Alerts</h3>
+                        <button class="btn btn-ghost btn-sm" type="button" onclick="loadAlerts()">Refresh</button>
+                    </div>
+                    <div id="alertsList"><p style="color:var(--ink-sec);font-size:14px;">Loading…</p></div>
+                </section>
+            </div>
+
+            <section class="glass" style="padding:24px;overflow-x:auto;margin-bottom:36px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);">Plan &amp; Manage Camps</h3>
+                    <button class="btn btn-ghost btn-sm" type="button" onclick="loadManageCamps()">Refresh</button>
+                </div>
+                <div id="campsManage"><p style="color:var(--ink-sec);font-size:14px;">Loading…</p></div>
+            </section>
+
+            <!-- Recent records -->
+            <div class="dash-grid">
+                <section class="glass" style="padding:24px;overflow-x:auto;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:14px;">Recent Person Records</h3>
+                    <p th:if="${#lists.isEmpty(normalRecords)}" style="color:var(--ink-sec);font-size:14px;">No records yet — use the form above.</p>
+                    <table class="rec-table" th:if="${!#lists.isEmpty(normalRecords)}">
+                        <thead><tr><th>Name</th><th>Age</th><th>Camp</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr th:each="r : ${normalRecords}">
+                                <td th:text="${r.name}">Name</td>
+                                <td th:text="${r.age}">0</td>
+                                <td th:text="${r.campName} ?: '—'">Camp</td>
+                                <td><select class="status-select" onchange="updateStatusFromEl(this, 'normal-records')" th:attr="data-id=${r.id}">
+                                    <option value="AT_CAMP" th:selected="${r.status == 'AT_CAMP'}">AT_CAMP</option>
+                                    <option value="TRANSFERRED" th:selected="${r.status == 'TRANSFERRED'}">TRANSFERRED</option>
+                                    <option value="MATCHED" th:selected="${r.status == 'MATCHED'}">MATCHED</option>
+                                    <option value="RELEASED" th:selected="${r.status == 'RELEASED'}">RELEASED</option>
+                                </select></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section class="glass" style="padding:24px;overflow-x:auto;">
+                    <h3 style="font-family:var(--font-display);font-weight:700;color:var(--navy);margin-bottom:14px;">Recent Critical Records</h3>
+                    <p th:if="${#lists.isEmpty(criticalRecords)}" style="color:var(--ink-sec);font-size:14px;">No critical records yet.</p>
+                    <table class="rec-table" th:if="${!#lists.isEmpty(criticalRecords)}">
+                        <thead><tr><th>Name</th><th>Age</th><th>Location</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr th:each="r : ${criticalRecords}">
+                                <td th:text="${r.name}">Name</td>
+                                <td th:text="${r.age}">0</td>
+                                <td th:text="${r.foundLocation} ?: '—'">Loc</td>
+                                <td><select class="status-select" onchange="updateStatusFromEl(this, 'critical-records')" th:attr="data-id=${r.id}">
+                                    <option value="UNIDENTIFIED" th:selected="${r.status == 'UNIDENTIFIED'}">UNIDENTIFIED</option>
+                                    <option value="IDENTIFIED" th:selected="${r.status == 'IDENTIFIED'}">IDENTIFIED</option>
+                                    <option value="TREATED" th:selected="${r.status == 'TREATED'}">TREATED</option>
+                                    <option value="RELEASED" th:selected="${r.status == 'RELEASED'}">RELEASED</option>
+                                </select></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <a href="/search" class="btn btn-outline">Find a Loved One</a>
+                <a href="/critical" class="btn btn-outline">Critical Search</a>
+                <a href="/camps" class="btn btn-outline">Relief Camp Directory</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div><div class="footer-brand"><div class="footer-brand-icon"><img src="/images/asha-logo.png" alt="Aasha" style="width:100%;height:100%;object-fit:contain;"></div><span class="footer-brand-text">Aasha</span></div><p class="footer-desc">AI-powered platform reuniting families separated by natural disasters across India.</p></div>
+                <div><h4 class="footer-title">Services</h4><ul class="footer-links"><li><a href="/search">Find Missing Person</a></li><li><a href="/camps">Relief Camps</a></li></ul></div>
+                <div><h4 class="footer-title">Emergency</h4><ul class="footer-links"><li>NDMA: <span style="color:#fbbf24;">1078</span></li><li>Police: <span style="color:#fbbf24;">100</span></li></ul></div>
+            </div>
+            <div class="footer-bottom"><p>© 2026 Aasha. Smart India Hackathon.</p><p style="font-family:var(--font-mono);">Built with empathy for every missing soul.</p></div>
+        </div>
+    </footer>
+    <div class="mobile-nav" id="mobileNav" onclick="closeMobileNav(event)"><div class="mobile-nav-panel" onclick="event.stopPropagation()"><div class="flex justify-between items-center"><span style="font-weight:800;font-size:18px;color:var(--navy);">Aasha</span><button class="mobile-nav-close" aria-label="Close navigation" onclick="toggleMobileNav()">&times;</button></div><nav class="mobile-nav-links"><a href="/dashboard" class="active">Dashboard</a><a href="/search">Find a Loved One</a><a href="/camps">Relief Camps</a><a href="/about">About</a></nav></div></div>
+    <div id="toast"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        function toggleMobileNav(){const n=document.getElementById('mobileNav');n.classList.toggle('open');document.body.style.overflow=n.classList.contains('open')?'hidden':'';}
+        function closeMobileNav(e){if(e.target.id==='mobileNav')toggleMobileNav();}
+        function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+        function pickCamp(sel){const o=sel.options[sel.selectedIndex];const f=sel.form;f.campId.value=sel.value;f.campName.value=o.value?(o.dataset.name||o.text):'';}
+        function submitRecord(e, url, form){
+            e.preventDefault();
+            const data={}; new FormData(form).forEach((v,k)=>{if(k!=='campSelect')data[k]=v;});
+            if(data.age!==''&&data.age!=null)data.age=parseInt(data.age,10);
+            if(url==='/api/camps'){
+                if(!data.latitude||!data.longitude){toast('Pick the camp location on the map first.');return false;}
+                data.latitude=parseFloat(data.latitude); data.longitude=parseFloat(data.longitude);
+                if(data.active!=null)data.active=(data.active===true||data.active==='true');
+                data.capacity=(data.capacity===''||data.capacity==null)?null:parseInt(data.capacity,10);
+                data.occupancy=(data.occupancy===''||data.occupancy==null)?0:parseInt(data.occupancy,10);
+            }
+            if(data.campId==='')delete data.campId;
+            fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+                .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+                .then(()=>{toast('Saved successfully.');form.reset();setTimeout(()=>location.reload(),700);})
+                .catch(err=>{toast('Failed: '+err.message);});
+            return false;
+        }
+        function updateStatus(type,id,status){
+            fetch('/api/'+type+'/'+id+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})})
+                .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);toast('Status updated to '+status+'.');})
+                .catch(err=>toast('Failed: '+err.message));
+        }
+        function updateStatusFromEl(el, type){ updateStatus(type, el.getAttribute('data-id'), el.value); }
+        function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+        // ===== Camp map picker =====
+        var campMap=null,campMarker=null;
+        function initCampMap(){
+            if(typeof L==='undefined'||!document.getElementById('campMap'))return;
+            campMap=L.map('campMap').setView([20.5937,78.9629],5);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'}).addTo(campMap);
+            campMap.on('click',function(e){setCampPoint(e.latlng.lat,e.latlng.lng);});
+        }
+        function setCampPoint(lat,lng){
+            if(!campMap)return;
+            if(!campMarker)campMarker=L.marker([lat,lng]).addTo(campMap);
+            else campMarker.setLatLng([lat,lng]);
+            document.getElementById('campLat').value=Number(lat).toFixed(6);
+            document.getElementById('campLng').value=Number(lng).toFixed(6);
+            document.getElementById('campCoord').textContent=Number(lat).toFixed(5)+', '+Number(lng).toFixed(5);
+        }
+        function useMyLocCamp(){
+            if(!navigator.geolocation){toast('Geolocation not supported.');return;}
+            navigator.geolocation.getCurrentPosition(function(p){
+                setCampPoint(p.coords.latitude,p.coords.longitude);
+                campMap.setView([p.coords.latitude,p.coords.longitude],14);
+            },function(){toast('Could not get your location.');});
+        }
+        initCampMap();
+
+        // ===== Incoming SOS =====
+        function sosActions(s){
+            if(s.status==='RECEIVED') return '<button class="btn btn-ghost btn-sm" onclick="setSos(\''+s.id+'\',\'ACKNOWLEDGED\')">Acknowledge</button> <button class="btn btn-ghost btn-sm" onclick="setSos(\''+s.id+'\',\'RESOLVED\')">Resolve</button> <button class="btn btn-ghost btn-sm" onclick="setSos(\''+s.id+'\',\'CANCELLED\')">Cancel</button>';
+            if(s.status==='ACKNOWLEDGED') return '<button class="btn btn-ghost btn-sm" onclick="setSos(\''+s.id+'\',\'RESOLVED\')">Resolve</button> <button class="btn btn-ghost btn-sm" onclick="setSos(\''+s.id+'\',\'CANCELLED\')">Cancel</button>';
+            return '<span style="font-size:12px;color:var(--ink-muted);">—</span>';
+        }
+        function loadSos(){
+            fetch('/api/sos').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(list){
+                var box=document.getElementById('sosList');
+                if(!list.length){box.innerHTML='<p style="color:var(--ink-sec);font-size:14px;">No SOS requests yet. Citizens send them with the red Send SOS button.</p>';return;}
+                box.innerHTML='<table class="rec-table"><thead><tr><th>Time</th><th>Sender</th><th>Message</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+                list.map(function(s){
+                    var t=s.createdAt?new Date(s.createdAt).toLocaleString():'—';
+                    var phone=s.userPhone?'<a href="tel:'+esc(s.userPhone)+'" style="font-weight:700;">'+esc(s.userPhone)+'</a>':'<span style="color:var(--ink-muted);">no phone on file</span>';
+                    var sender=phone+'<div style="font-size:11px;color:var(--ink-muted);">'+esc(s.userUid||'')+'</div>';
+                    var loc='<a href="https://www.openstreetmap.org/?mlat='+s.latitude+'&mlon='+s.longitude+'#map=17/'+s.latitude+'/'+s.longitude+'" target="_blank" style="font-family:var(--font-mono);font-size:11px;">'+Number(s.latitude).toFixed(4)+', '+Number(s.longitude).toFixed(4)+' &rarr; Open map</a>';
+                    return '<tr><td style="font-size:12px;white-space:nowrap;">'+esc(t)+'</td><td style="font-size:13px;">'+sender+'</td><td>'+esc(s.message||'—')+'</td><td>'+loc+'</td><td><strong style="font-size:12px;">'+esc(s.status)+'</strong></td><td style="white-space:nowrap;">'+sosActions(s)+'</td></tr>';
+                }).join('')+'</tbody></table>';
+            }).catch(function(e){document.getElementById('sosList').innerHTML='<p style="color:#b91c1c;font-size:14px;">Failed to load: '+esc(e.message)+'</p>';});
+        }
+        function setSos(id,status){
+            fetch('/api/sos/'+id+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:status})})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);toast('SOS marked '+status+'.');loadSos();})
+            .catch(function(e){toast('Failed: '+e.message);});
+        }
+
+        // ===== Alerts =====
+        function sendAlert(e){
+            e.preventDefault();
+            var f=e.target, data={};
+            new FormData(f).forEach(function(v,k){data[k]=v;});
+            data.active=true;
+            fetch('/api/alerts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+            .then(function(){toast('Alert published — live banner updated.');f.reset();loadAlerts();})
+            .catch(function(err){toast('Failed: '+err.message);});
+            return false;
+        }
+        function loadAlerts(){
+            fetch('/api/alerts').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(list){
+                var box=document.getElementById('alertsList');
+                if(!list.length){box.innerHTML='<p style="color:var(--ink-sec);font-size:14px;">No alerts created yet.</p>';return;}
+                box.innerHTML=list.map(function(a){
+                    return '<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">'+
+                    '<div style="flex:1;min-width:0;">'+
+                    '<div style="display:flex;gap:8px;align-items:center;min-width:0;"><strong style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(a.title)+'</strong>'+
+                    '<span class="badge" style="flex:none;'+(a.active?'background:#e6f4ea;color:#137333;':'background:var(--bg-light);color:var(--ink-muted);')+'">'+(a.active?'ACTIVE':'OFF')+'</span></div>'+
+                    '<div style="color:var(--ink-muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+esc(a.type)+' · '+esc(a.severity)+(a.district?' · '+esc(a.district):'')+(a.message?' — '+esc(a.message):'')+'</div></div>'+
+                    '<button class="btn btn-ghost btn-sm" style="flex:none;" onclick="toggleAlert('+a.id+','+(!a.active)+')">'+(a.active?'Deactivate':'Activate')+'</button></div>';
+                }).join('');
+            }).catch(function(e){document.getElementById('alertsList').innerHTML='<p style="color:#b91c1c;font-size:14px;">Failed: '+esc(e.message)+'</p>';});
+        }
+        function toggleAlert(id,active){
+            fetch('/api/alerts/'+id+'/active',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({active:active})})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);toast('Alert '+(active?'activated':'deactivated')+'.');loadAlerts();})
+            .catch(function(e){toast('Failed: '+e.message);});
+        }
+
+        // ===== Plan & manage camps =====
+        var _camps=[];
+        function loadManageCamps(){
+            fetch('/api/camps/list').then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(list){
+                _camps=list;
+                var box=document.getElementById('campsManage');
+                if(!list.length){box.innerHTML='<p style="color:var(--ink-sec);font-size:14px;">No camps yet — use “Register Relief Camp” above.</p>';return;}
+                box.innerHTML='<table class="rec-table"><thead><tr><th>Camp</th><th>Location</th><th>Officer</th><th>Contact</th><th>Capacity</th><th>Occupancy</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+                list.map(function(c){
+                    return '<tr data-camp="'+c.id+'"><td><strong>'+esc(c.name)+'</strong></td><td>'+esc(c.locationName||'—')+'</td><td>'+esc(c.officerName||'—')+'</td><td style="font-family:var(--font-mono);font-size:12px;">'+esc(c.contactNumber||'—')+'</td>'+
+                    '<td><input type="number" min="0" data-field="capacity" value="'+(c.capacity==null?'':c.capacity)+'" style="width:74px;padding:5px 7px;border:1px solid var(--border);border-radius:8px;font-size:13px;" placeholder="—"></td>'+
+                    '<td><input type="number" min="0" data-field="occupancy" value="'+(c.occupancy==null?0:c.occupancy)+'" style="width:74px;padding:5px 7px;border:1px solid var(--border);border-radius:8px;font-size:13px;"></td>'+
+                    '<td>'+(c.active?'<span style="color:#137333;font-weight:700;font-size:12px;">ACTIVE</span>':'<span style="color:var(--ink-muted);font-size:12px;">INACTIVE</span>')+'</td>'+
+                    '<td style="white-space:nowrap;"><button class="btn btn-ghost btn-sm" onclick="saveCampRow(this)">Save</button> <button class="btn btn-ghost btn-sm" onclick="toggleCamp(\''+c.id+'\')">'+(c.active?'Deactivate':'Activate')+'</button> <button class="btn btn-ghost btn-sm" onclick="deleteCamp(\''+c.id+'\')">Delete</button></td></tr>';
+                }).join('')+'</tbody></table>';
+            }).catch(function(e){document.getElementById('campsManage').innerHTML='<p style="color:#b91c1c;font-size:14px;">Failed: '+esc(e.message)+'</p>';});
+        }
+        function toggleCamp(id){
+            var c=_camps.find(function(x){return x.id===id;}); if(!c)return;
+            var copy=Object.assign({},c); copy.active=!c.active;
+            fetch('/api/camps/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(copy)})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);toast('Camp '+(copy.active?'activated':'deactivated')+'.');loadManageCamps();})
+            .catch(function(e){toast('Failed: '+e.message);});
+        }
+        function saveCampRow(btn){
+            var tr=btn.closest('tr'), id=tr.getAttribute('data-camp');
+            var c=_camps.find(function(x){return x.id===id;}); if(!c)return;
+            var copy=Object.assign({},c);
+            var cap=tr.querySelector('[data-field="capacity"]').value;
+            var occ=tr.querySelector('[data-field="occupancy"]').value;
+            copy.capacity=(cap==='')?null:parseInt(cap,10);
+            copy.occupancy=(occ==='')?0:parseInt(occ,10);
+            fetch('/api/camps/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(copy)})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);toast('Capacity saved: '+c.name+' → '+(copy.capacity==null?'unlimited':copy.capacity)+' beds, '+copy.occupancy+' occupied.');loadManageCamps();})
+            .catch(function(e){toast('Failed: '+e.message);});
+        }
+        function deleteCamp(id){
+            if(!confirm('Delete this camp? This cannot be undone.'))return;
+            fetch('/api/camps/'+id,{method:'DELETE'})
+            .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);toast('Camp deleted.');loadManageCamps();})
+            .catch(function(e){toast('Failed: '+e.message);});
+        }
+
+        loadSos(); loadAlerts(); loadManageCamps();
+    </script>
+</body>
+</html>
